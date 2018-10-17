@@ -1,0 +1,23 @@
+.fail {
+  background-color: darkred !important;
+  color: aliceblue !important;
+
+
+}
+
+.success {
+
+  background-color: chartreuse !important;
+  color: black !important;
+
+}
+
+.ui-progress-spinner {
+  position: relative;
+  margin: 0 auto;
+  width: 100px;
+  height: 100px;
+  display: inline-block;
+  padding-top: 2px;
+  text-align: left;
+}

@@ -1,0 +1,49 @@
+
+<p-toast position="top-right"></p-toast>
+
+
+
+
+<div class="container">
+
+  <form  [formGroup]="formLogin" (submit)="loginVerify()"  class="login-box">
+
+    <div class="text-center mb-4">
+      <h1 class="h3 mb-3 font-weight-normal">{{appName}}</h1>
+    </div>
+
+    <div class="form-group">
+
+      <span class="ui-float-label">
+             <input  type="text" size=30  class="form-control" pInputText  name="userName" formControlName="userName"  tabindex="1">
+             <label >Username</label>
+         </span>
+      <div  *ngIf="!userName.valid && userName.touched && userName.dirty"  class="alert alert-danger small">Username is required!</div>
+
+    </div>
+
+    <div class="form-group">
+         <span class="ui-float-label">
+             <input type="password" class="form-control" size=30 pInputText name="password" formControlName="password" tabindex="2"  >
+             <label>Password</label>
+         </span>
+      <div  *ngIf="!password.valid && password.touched && password.dirty"  class="alert alert-danger small">Password is required!</div>
+
+    </div>
+
+    <div class="custom-control custom-checkbox">
+      <input type="checkbox" class="custom-control-input" id="checkRememberMe" formControlName="checkRememberMe" tabindex="3"  >
+      <label class="custom-control-label" for="checkRememberMe">Remember Me</label>
+    </div>
+    <!--<p-inputSwitch [(ngModel)]="checked"></p-inputSwitch>-->
+
+    <br>
+    <div class="form-group">
+      <input  type="submit" class="btn btn-primary btn-block"  tabindex="4" value="Login" [disabled]="!formLogin.valid" >
+    </div>
+
+  </form>
+
+</div>
+
+

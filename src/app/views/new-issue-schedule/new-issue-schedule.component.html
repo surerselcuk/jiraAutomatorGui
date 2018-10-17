@@ -1,0 +1,282 @@
+
+<!--<p-toast position="top-right"></p-toast>-->
+
+
+
+<div class="container" style="margin-top: 1%">
+  <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
+  <!--<p-progressBar *ngIf="progress" [style]="{height: '.5em'}" mode="indeterminate"></p-progressBar>-->
+  <!--<p-messages ></p-messages>-->
+  <p-panel [toggleable]="true" >
+    <p-header >
+      <strong><i class="fa fa-plus"> </i> {{edidSc ? 'Edit Schedule' : 'New Schedule' }}</strong>
+    </p-header>
+
+    <form  [formGroup]="formNewSc" class="form-group" style="padding-top: 4px">
+      <!--<form  [formGroup]="formNewSc" class="form-group" style="padding-top: 4px" (submit)="formSumbit()">-->
+      <!--<div class="alert alert-primary"><h4>New Schedule</h4> </div>-->
+      <br>
+      <div class="row">
+        <div class="col-md-2">
+          Project Name *
+        </div>
+        <div class="col-md-7">
+          <div class="form-group">
+
+                <p-autoComplete (onClear)="clearProject()"  [dropdown]="true" [multiple]="false"  [autoHighlight]="true"  [style]="{'width':'100%'}" [inputStyle]="{'width':'93%'}"  [forceSelection]="true"   [suggestions]="filteredProject" (completeMethod)="filterProject($event)"
+                                 field="name"   [minLength]="3" formControlName="project" emptyMessage="not found"
+                                 tabindex="1" placeholder="Searchable for Project Name or Key">
+                </p-autoComplete>
+
+
+
+          </div>
+        </div>
+        <div class="col-md-3">
+          <p-message severity="error" text="Project is required" *ngIf="!formNewSc.controls.project.valid&&formNewSc.controls.project.dirty">Project is required</p-message>
+
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          Issue Type *
+        </div>
+        <div class="col-md-7">
+          <div class="form-group">
+
+              <p-autoComplete  (onClear)="clearIssueType()" [style]="{'width':'100%'}" [inputStyle]="{'width':'93%'}"  [autoHighlight]="true"  [forceSelection]="true" [dropdown]="true" [suggestions]="filteredIssueType" (completeMethod)="filterIssueType($event)"
+                                field="name"  [minLength]="2"  formControlName="issuetype"  tabindex="2">
+              </p-autoComplete>
+
+          </div>
+        </div>
+        <div class="col-md-3">
+          <p-message severity="error" text="Issue Type is required" *ngIf="!formNewSc.controls.issuetype.valid&&formNewSc.controls.issuetype.dirty">Project is required</p-message>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          Assignee
+        </div>
+        <div class="col-md-7">
+          <div class="form-group">
+
+            <p-autoComplete (onClear)="clearUser()"  [style]="{'width':'100%'}" [inputStyle]="{'width':'93%'}" [autoHighlight]="true" [dropdown]="true" [forceSelection]="true"  [suggestions]="filteredUsers" (completeMethod)="filterUsers($event)"
+                              field="name"  [minLength]="2"  formControlName="assignee"  tabindex="2" placeholder="Searchable for Username">
+            </p-autoComplete>
+
+
+          </div>
+        </div>
+        <div class="col-md-3">
+          <!--<p-message severity="error" text="Issue Type is required" *ngIf="!formNewSc.controls.issuetype.valid&&formNewSc.controls.issuetype.dirty">Project is required</p-message>-->
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          Summary
+        </div>
+        <div class="col-md-7">
+        <div class="form-group">
+            <input   pInputText maxlength="254" class="form-control" type="text"    formControlName="summary"    tabindex="3">
+
+          </div>
+        </div>
+        <div class="col-md-3">
+          <!--<p-message  severity="error" text="Summary is required" *ngIf="!formNewSc.controls.summary.valid&&formNewSc.controls.summary.dirty"></p-message>-->
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          Description
+        </div>
+        <div class="col-md-7">
+          <div class="form-group">
+
+           <textarea [rows]="3"  pInputTextarea autoResize="autoResize"  class="form-control" formControlName="description" tabindex="4" ></textarea>
+
+          </div>
+          </div>
+        <div class="col-md-3">
+
+        </div>
+        </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          Schedule Reason *
+        </div>
+        <div class="col-md-7">
+          <div class="form-group">
+            <input   pInputText maxlength="254" class="form-control" type="text"    formControlName="sc_description"    tabindex="3">
+
+          </div>
+        </div>
+        <div class="col-md-3">
+          <p-message  severity="error" text="Reason is required" *ngIf="!formNewSc.controls.sc_description.valid&&formNewSc.controls.sc_description.dirty"></p-message>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          Add Fields
+        </div>
+        <div class="col-md-7">
+
+          <div class="form-group">
+              <p-autoComplete  [style]="{'width':'100%'}" [inputStyle]="{'width':'95%'}"  [multiple]="true"  [suggestions]="filteredField" (completeMethod)="filterField($event)"
+                               field="name"  [minLength]="2"  formControlName="fields"  tabindex="5" emptyMessage="not found"  placeholder="Searchable">
+              </p-autoComplete>
+          </div>
+        </div>
+        <div class="col-md-3">
+        </div>
+      </div>
+
+      <div formArrayName="dynamicFields" *ngFor="let data of this.dynamicFieldCtrl.controls; let i = index">
+        <div [formGroupName]="i"  >
+          <div class="row">
+            <div class="col-md-2">
+              {{data.value.name}} *
+            </div>
+            <div class="col-md-7">
+              <div class="form-group">
+                         <input  pInputText  class="form-control" type="text"  #adi [formControlName]="data.value | objectKey" [tabindex]="i+5" >
+             </div>
+            </div>
+            <div class="col-md-3">
+            </div>
+          </div>
+
+
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          Triger *
+        </div>
+        <div class="col-md-2" formGroupName="triger">
+          <!--<p-radioButton name="radioTriger" value="one" label="One time" formControlName="trigerType"></p-radioButton><br>-->
+          <p-radioButton #test name="radioTriger" value="day" label="Daily" formControlName="trigerType"></p-radioButton><br><br>
+          <p-radioButton #test name="radioTriger" value="week" label="Weekly" formControlName="trigerType"></p-radioButton><br><br>
+          <p-radioButton  #test name="radioTriger" value="month" label="Monthly" formControlName="trigerType"></p-radioButton><br><br>
+        </div>
+
+        <div class="col-md-5" [ngSwitch]="trigerType.value" formGroupName="triger">
+          <!--<div class="col-md-5" [ngSwitch]="formNewSc.controls.triger.controls.trigerType.value" formGroupName="triger">-->
+
+          <div *ngSwitchCase="'week'" formGroupName="weekTriger" >
+              <div class="row">
+                <div class="col-md-4 offset-2">
+                  Repetition Week
+                </div>
+                <div class="col-md-6">
+                  <p-spinner size="1" maxlength="2" [min]="1" [max]="4" formControlName="recur"></p-spinner>
+                </div>
+              </div>
+              <div class="row">
+              <div class="col-md-4">
+                <br>
+              </div>
+              <div class="col-md-8">
+              </div>
+
+            </div>
+              <div class="row">
+              <div class="col-md-4 offset-2">
+                Repetition Day
+              </div>
+              <div class="col-md-6">
+                <p-multiSelect  [options]="days" [panelStyle]="{minWidth:'12em'}" formControlName="weekDay" [filter]="false"
+                                defaultLabel="Days" ></p-multiSelect>
+                <p-message  severity="error" text="Repetition Day is required" *ngIf="!formNewSc.controls.triger.controls.weekTriger.controls.weekDay.valid && formNewSc.controls.triger.controls.weekTriger.controls.weekDay.dirty"></p-message>
+
+              </div>
+
+            </div>
+          </div>
+          <div *ngSwitchCase="'month'" formGroupName="monthTriger" >
+            <div class="row">
+              <div class="col-md-4 offset-2">
+                Repetition Month
+              </div>
+              <div class="col-md-6">
+                <p-multiSelect  [options]="months" [panelStyle]="{minWidth:'12em'}" formControlName="month" [filter]="false"
+                                defaultLabel="Months"></p-multiSelect>
+                <p-message  severity="error" text="Repetition Month is required" *ngIf="!formNewSc.controls.triger.controls.monthTriger.controls.month.valid && formNewSc.controls.triger.controls.monthTriger.controls.month.dirty"></p-message>
+
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <br>
+              </div>
+              <div class="col-md-8">
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-md-4 offset-2">
+                Repetition Day
+              </div>
+              <div class="col-md-6">
+                <p-multiSelect  [options]="monthDays" [panelStyle]="{minWidth:'12em'}" formControlName="monthDay" [filter]="false"
+                                defaultLabel="Days" [selectionLimit]="31"></p-multiSelect>
+                <p-message  severity="error" text="Repetition Day is required" *ngIf="!formNewSc.controls.triger.controls.monthTriger.controls.monthDay.valid && formNewSc.controls.triger.controls.monthTriger.controls.monthDay.dirty"></p-message>
+              </div>
+
+            </div>
+
+          </div>
+
+
+        </div>
+      </div>
+      <!--{{formNewSc.controls.triger.controls.trigerType.value}}-->
+
+    </form>
+    <p-footer>
+      <div class="row">
+        <div class="col-md-2 offset-2">
+          <!--<input  #submit type="submit" value="Save" (click)="formSumbit(submit)" [disabled]="!formNewSc.valid" class="btn btn-primary btn-block">-->
+          <button  #submit type="submit" value="Save" (click)="formSumbit(submit)" [disabled]="!formNewSc.valid" class="btn btn-primary btn-block"> <span style="text-align: left"><p-progressSpinner *ngIf="progress" [style]="{width: '20px', height: '20px', margin: '0px'}" strokeWidth="8"   animationDuration=".5s"></p-progressSpinner></span><i *ngIf="!progress"  class="fa fa-save"> </i>
+           <span *ngIf="!progress">&nbsp;&nbsp;Save </span> <span *ngIf="progress">Saving </span>
+          </button>
+        </div>
+
+        <div class="col-md-2" *ngIf="edidSc">
+             <button  type="button" value="Delete" (click)="scDelete()"  class="btn btn-primary btn-block"><i class="fa fa-trash">&nbsp;Delete </i></button>
+        </div>
+        <div class="col-md-2">
+          <!--<input  *ngIf="!edidSc" type="button" value="Clear" (click)="formReset()" class="btn btn-primary btn-block">-->
+          <!--<input  *ngIf="edidSc" type="button" value="Cancel" (click)="scCancel()" class="btn btn-primary btn-block">-->
+
+          <button  *ngIf="!edidSc" type="button" value="Clear" (click)="formReset()" class="btn btn-primary btn-block"><i class="fa fa-trash"></i> Clear</button>
+          <button  *ngIf="edidSc" type="button" value="Cancel" (click)="scCancel()" class="btn btn-primary btn-block"><i class="fa fa-ban"></i> Cancel</button>
+        </div>
+      </div>
+    </p-footer>
+  </p-panel>
+</div>
+
+<div>
+  <!--{{formNewSc.controls.dynamicFields.value | json}}-->
+  <!--{{formNewSc.value | json}}-->
+</div>
+
+
+
+
+
+
+
+
+
+

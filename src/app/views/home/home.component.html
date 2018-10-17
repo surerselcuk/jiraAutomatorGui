@@ -1,0 +1,38 @@
+
+<div class="container" style="margin-top: 1%">
+  <div class="row">
+    <div class="col-md-6">
+      <p-card *ngIf="g1Visible" title="Issue Automation Status"   [style]="{width: '100%'}" styleClass="ui-card-shadow">
+        <p-header>
+
+        </p-header>
+          <p-chart  (onDataSelect)="selectStatus($event)" type="doughnut" [data]="g1data"></p-chart>
+        <p-footer>
+
+        </p-footer>
+      </p-card>
+    </div>
+    <div class="col-md-6">
+      <p-card *ngIf="g2Visible" title="Issue Automation Projects"  [style]="{width: '100%'}" styleClass="ui-card-shadow">
+        <p-header>
+
+        </p-header>
+        <p-chart type="pie" (onDataSelect)="selectProject($event)"  [data]="g2data"></p-chart>
+        <p-footer>
+
+        </p-footer>
+      </p-card>
+    </div>
+    <div class="col-md-12" *ngIf="!g1Visible && !g2Visible">
+      <br>
+      You have no record yet. You can schedule a new jira issue<strong> <a routerLink="/newschedule"> here.</a> </strong>
+    </div>
+
+  </div>
+
+
+
+
+
+
+</div>
